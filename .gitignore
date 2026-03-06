@@ -1,0 +1,16 @@
+# Backend
+.env
+.venv/
+chroma_db/
+logs/
+eval/eval_results.csv
+__pycache__/
+*.pyc
+
+# Frontend
+node_modules/
+dist/
+.angular/
+
+# OS
+.DS_Store

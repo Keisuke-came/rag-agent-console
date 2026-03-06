@@ -1,0 +1,42 @@
+[
+  {
+    "question": "このプロジェクトの目的は何ですか？",
+    "expected_keywords": ["目的", "概要"]
+  },
+  {
+    "question": "主要な技術スタックを教えてください。",
+    "expected_keywords": ["技術", "スタック"]
+  },
+  {
+    "question": "データの保存先はどこですか？",
+    "expected_keywords": ["保存", "データ"]
+  },
+  {
+    "question": "セキュリティポリシーについて説明してください。",
+    "expected_keywords": ["セキュリティ", "ポリシー"]
+  },
+  {
+    "question": "チームメンバーの役割分担を教えてください。",
+    "expected_keywords": ["役割", "メンバー"]
+  },
+  {
+    "question": "開発スケジュールはどうなっていますか？",
+    "expected_keywords": ["スケジュール", "計画"]
+  },
+  {
+    "question": "テスト戦略について教えてください。",
+    "expected_keywords": ["テスト", "品質"]
+  },
+  {
+    "question": "障害発生時の対応手順は？",
+    "expected_keywords": ["障害", "対応"]
+  },
+  {
+    "question": "コスト見積もりはいくらですか？",
+    "expected_keywords": ["コスト", "費用"]
+  },
+  {
+    "question": "今後のロードマップを教えてください。",
+    "expected_keywords": ["ロードマップ", "計画"]
+  }
+]

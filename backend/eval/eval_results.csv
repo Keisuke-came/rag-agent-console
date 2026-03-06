@@ -1,0 +1,11 @@
+question,answered,has_citation,keyword_hit_rate,latency_sec,sources,answer_preview
+このプロジェクトの目的は何ですか？,True,True,0.50,3.29,"sample_project.md, sample_project.md",このプロジェクトの目的は、社内ドキュメントを活用したRAG（Retrieval-Augmented Generation）システムのMVPを構築することです。[出典: sample_project.md]
+主要な技術スタックを教えてください。,True,True,1.00,2.20,"sample_project.md, sample_project.md",主要な技術スタックは以下の通りです： - Python 3.11+ - Streamlit（UI） - ChromaDB（ベクトルDB） - OpenAI API（embedding & LLM）[出典: sample_project.md
+データの保存先はどこですか？,True,True,1.00,1.84,"sample_project.md, sample_project.md",ドキュメントデータはローカルの ChromaDB に保存されます。永続化ディレクトリは `chroma_db/` です。[出典: sample_project.md]
+セキュリティポリシーについて説明してください。,True,True,1.00,2.37,"sample_project.md, sample_project.md",セキュリティポリシーは以下の通りです。  - 入力時にPIIマスクを適用します。[出典: sample_project.md] - プロンプトインジェクションを検知・拒否します。[出典: sample_project.md] - 出力時にN
+チームメンバーの役割分担を教えてください。,True,True,1.00,2.37,"sample_project.md, sample_project.md",チームメンバーの役割分担は以下の通りです。  - 開発リード: アーキテクチャ設計、コードレビュー [出典: sample_project.md] - MLエンジニア: embedding選定、チャンク戦略 [出典: sample_proj
+開発スケジュールはどうなっていますか？,True,True,0.50,3.37,"sample_project.md, sample_project.md",開発スケジュールは以下の通りです。  - Week 1: MVP構築（ingest + chat UI） [出典: sample_project.md] - Week 2: 評価・チューニング [出典: sample_project.md]
+テスト戦略について教えてください。,True,True,1.00,3.09,"sample_project.md, sample_project.md",テスト戦略は、ユニットテストと eval_questions.json による自動回帰テストを行うことです。品質指標としては、回答率、引用率、キーワードヒット率が設定されています。[出典: sample_project.md]
+障害発生時の対応手順は？,True,True,1.00,3.29,"sample_project.md, sample_project.md",障害発生時の対応手順は以下の通りです。  1. ログ（logs/audit.jsonl）を確認 [出典: sample_project.md] 2. Chroma DB を再構築（ingest.py 再実行） [出典: sample_pro
+コスト見積もりはいくらですか？,True,True,0.50,2.47,"sample_project.md, sample_project.md",コスト見積もりは以下の通りです： - OpenAI API: 月額 $5〜20（利用量依存） - インフラ: ローカル実行のため $0 [出典: sample_project.md]。
+今後のロードマップを教えてください。,True,True,0.50,4.85,"sample_project.md, sample_project.md",今後のロードマップは以下の通りです。  - v1: ローカルMVP（現在） - v2: 認証＋マルチユーザー - v3: クラウドデプロイ＋モニタリング [出典: sample_project.md]
