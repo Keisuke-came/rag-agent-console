@@ -16,13 +16,21 @@ def mask_pii(text: str) -> str:
 
 # --- Prompt injection detection ---
 _INJECTION_KEYWORDS = [
+    # 英語
     "ignore previous instructions",
     "ignore above",
     "system prompt",
     "you are now",
     "disregard",
-    "前の指示を無視",
+    # 日本語: 指示無視系
+    "前の指示を無視",       # "以前の指示を無視" も部分一致でカバー
+    "これまでの指示を無視",
+    "上記の指示を無視",
+    # 日本語: プロンプト漏洩系
     "システムプロンプト",
+    "内部プロンプト",
+    "開発者向け指示",
+    "隠し指示",
 ]
 
 def detect_injection(text: str) -> bool:
