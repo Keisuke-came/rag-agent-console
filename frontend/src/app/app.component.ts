@@ -125,7 +125,9 @@ import { SearchHit, PanelTab } from './models/interfaces';
 
     .main-content {
       display: flex; flex-direction: column; background: var(--bg-primary); min-width: 0;
+      overflow: hidden;
     }
+    app-chat { flex: 1; min-height: 0; }
 
     .right-panel {
       background: var(--bg-secondary); border-left: 1px solid var(--border-subtle);
