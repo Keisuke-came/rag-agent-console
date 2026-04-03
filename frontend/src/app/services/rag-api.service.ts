@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, map, tap } from 'rxjs';
+import { Observable, of, map, tap, catchError } from 'rxjs';
 import { RagResponse, EvalResult, EvalSummary, DocumentInfo } from '../models/interfaces';
 import { AuditLogService } from './audit-log.service';
 
@@ -68,6 +68,15 @@ export class RagApiService {
           avg_latency: results.reduce((s, r) => s + r.latency_sec, 0) / total,
         };
       })
+    );
+  }
+
+  /** 評価結果をバックエンドから取得 */
+  getEvalData(): Observable<{ summary: EvalSummary | null; results: EvalResult[] }> {
+    return this.http.get<{ summary: EvalSummary | null; results: EvalResult[] }>(
+      `${API_BASE}/api/eval-summary`
+    ).pipe(
+      catchError(() => of({ summary: null, results: [] })),
     );
   }
 
