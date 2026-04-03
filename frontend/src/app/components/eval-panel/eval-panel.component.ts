@@ -9,36 +9,57 @@ import { EvalResult, EvalSummary } from '../../models/interfaces';
   imports: [CommonModule],
   template: `
     <div class="panel-body">
-      <!-- Summary -->
-      <div class="eval-summary" *ngIf="summary">
-        <div class="eval-metric">
-          <div class="em-value">{{ (summary.answered_rate * 100).toFixed(0) }}%</div>
-          <div class="em-label">回答率</div>
+
+      <!-- 未実行 -->
+      <div class="empty-hint" *ngIf="!loading && !summary">
+        <div class="empty-icon">📊</div>
+        <div>評価未実行</div>
+        <div class="empty-sub">backend/eval.py を実行すると結果が表示されます</div>
+      </div>
+
+      <!-- サマリー -->
+      <div *ngIf="summary">
+        <div class="total-label">総件数: {{ summary.total }} 問</div>
+        <div class="eval-summary">
+          <div class="eval-metric">
+            <div class="em-value">{{ (summary.answered_rate * 100).toFixed(0) }}%</div>
+            <div class="em-label">回答率</div>
+          </div>
+          <div class="eval-metric">
+            <div class="em-value">{{ (summary.citation_rate * 100).toFixed(0) }}%</div>
+            <div class="em-label">引用率</div>
+          </div>
+          <div class="eval-metric">
+            <div class="em-value">{{ (summary.avg_keyword_hit * 100).toFixed(0) }}%</div>
+            <div class="em-label">KWヒット率</div>
+          </div>
+          <div class="eval-metric">
+            <div class="em-value">{{ summary.avg_latency.toFixed(1) }}s</div>
+            <div class="em-label">平均レイテンシ</div>
+          </div>
         </div>
-        <div class="eval-metric">
-          <div class="em-value">{{ (summary.citation_rate * 100).toFixed(0) }}%</div>
-          <div class="em-label">引用率</div>
-        </div>
-        <div class="eval-metric">
-          <div class="em-value">{{ (summary.avg_keyword_hit * 100).toFixed(0) }}%</div>
-          <div class="em-label">KWヒット率</div>
-        </div>
-        <div class="eval-metric">
-          <div class="em-value">{{ summary.avg_latency.toFixed(1) }}s</div>
-          <div class="em-label">平均レイテンシ</div>
+
+        <!-- 結果一覧 -->
+        <div class="eval-row" *ngFor="let r of results">
+          <span class="eq">{{ r.question }}</span>
+          <span class="er" [ngClass]="r.answered ? 'pass' : 'fail'">
+            {{ r.answered ? 'PASS' : 'FAIL' }}
+          </span>
         </div>
       </div>
 
-      <!-- Results table -->
-      <div class="eval-row" *ngFor="let r of results">
-        <span class="eq">{{ r.question }}</span>
-        <span class="er" [ngClass]="r.answered ? 'pass' : 'fail'">
-          {{ r.answered ? 'PASS' : 'FAIL' }}
-        </span>
-      </div>
     </div>
   `,
   styles: [`
+    .empty-hint {
+      text-align: center; padding: 40px 20px;
+      color: var(--text-muted); font-size: 13px; line-height: 1.8;
+    }
+    .empty-icon { font-size: 32px; margin-bottom: 8px; }
+    .empty-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .total-label {
+      font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-align: right;
+    }
     .eval-summary {
       display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;
     }
@@ -66,11 +87,21 @@ import { EvalResult, EvalSummary } from '../../models/interfaces';
 export class EvalPanelComponent implements OnInit {
   results: EvalResult[] = [];
   summary: EvalSummary | null = null;
+  loading = false;
 
   constructor(private ragApi: RagApiService) {}
 
   ngOnInit(): void {
-    this.ragApi.getEvalResults().subscribe((r) => (this.results = r));
-    this.ragApi.getEvalSummary().subscribe((s) => (this.summary = s));
+    this.loading = true;
+    this.ragApi.getEvalData().subscribe({
+      next: (data) => {
+        this.summary = data.summary;
+        this.results = data.results;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      },
+    });
   }
 }
