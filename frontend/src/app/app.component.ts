@@ -6,6 +6,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { SearchPanelComponent } from './components/search-panel/search-panel.component';
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { EvalPanelComponent } from './components/eval-panel/eval-panel.component';
+import { DocumentsComponent } from './components/documents/documents.component';
 import { AuditLogService } from './services/audit-log.service';
 import { SearchHit, PanelTab } from './models/interfaces';
 
@@ -20,6 +21,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
     SearchPanelComponent,
     AuditLogComponent,
     EvalPanelComponent,
+    DocumentsComponent,
   ],
   template: `
     <div class="app-shell">
@@ -70,6 +72,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
           </app-search-panel>
           <app-audit-log *ngIf="activeTab === 'logs'"></app-audit-log>
           <app-eval-panel *ngIf="activeTab === 'eval'"></app-eval-panel>
+          <app-documents *ngIf="activeTab === 'documents'"></app-documents>
         </div>
       </aside>
     </div>
@@ -160,6 +163,7 @@ export class AppComponent implements OnInit {
     { id: 'search', icon: '🔍', label: 'Search' },
     { id: 'logs', icon: '📋', label: 'Logs' },
     { id: 'eval', icon: '📊', label: 'Eval' },
+    { id: 'documents', icon: '📄', label: 'Docs' },
   ];
 
   constructor(private auditLog: AuditLogService) {}
