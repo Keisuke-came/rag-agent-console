@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, map, tap, catchError } from 'rxjs';
-import { RagResponse, EvalResult, EvalSummary, DocumentInfo } from '../models/interfaces';
+import { RagResponse, EvalResult, EvalSummary, DocumentInfo, DocumentPreview } from '../models/interfaces';
 import { AuditLogService } from './audit-log.service';
 
 const API_BASE = 'http://localhost:8000';
@@ -80,10 +80,19 @@ export class RagApiService {
     );
   }
 
-  /** ドキュメント一覧取得（モック） */
+  /** ドキュメント一覧取得 */
   getDocuments(): Observable<DocumentInfo[]> {
-    return of([
-      { name: 'sample_project.md', chunks: 2, size: '1.2KB' },
-    ]);
+    return this.http.get<{ documents: DocumentInfo[] }>(`${API_BASE}/api/documents`).pipe(
+      map((res) => res.documents),
+      catchError(() => of([])),
+    );
+  }
+
+  /** ドキュメント本文プレビュー取得 */
+  getDocumentPreview(name: string): Observable<DocumentPreview> {
+    const params = `?name=${encodeURIComponent(name)}`;
+    return this.http.get<DocumentPreview>(`${API_BASE}/api/documents/preview${params}`).pipe(
+      catchError(() => of({ name, content: '' })),
+    );
   }
 }

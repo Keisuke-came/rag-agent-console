@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from rag.chain import ask
-from rag.config import LOGS_DIR
+from rag.config import LOGS_DIR, DOCS_DIR
 
 app = FastAPI(title="RAG Agent API")
 
@@ -88,6 +88,33 @@ def api_eval_summary():
         "avg_latency": sum(r["latency_sec"] for r in rows) / total,
     }
     return {"summary": summary, "results": rows}
+
+
+@app.get("/api/documents")
+def api_documents():
+    """docs ディレクトリ内のファイル一覧を返す。"""
+    if not os.path.exists(DOCS_DIR):
+        return {"documents": []}
+    docs = []
+    for fname in sorted(os.listdir(DOCS_DIR)):
+        fpath = os.path.join(DOCS_DIR, fname)
+        if os.path.isfile(fpath):
+            size_bytes = os.path.getsize(fpath)
+            size_str = f"{size_bytes / 1024:.1f}KB" if size_bytes >= 1024 else f"{size_bytes}B"
+            docs.append({"name": fname, "size": size_str})
+    return {"documents": docs}
+
+
+@app.get("/api/documents/preview")
+def api_document_preview(name: str = Query(...)):
+    """指定ファイルの本文冒頭を返す。パストラバーサル対策済み。"""
+    safe_name = os.path.basename(name)
+    fpath = os.path.join(DOCS_DIR, safe_name)
+    if not os.path.isfile(fpath):
+        return {"name": safe_name, "content": ""}
+    with open(fpath, "r", encoding="utf-8", errors="replace") as f:
+        content = f.read(3000)
+    return {"name": safe_name, "content": content}
 
 
 @app.get("/api/health")

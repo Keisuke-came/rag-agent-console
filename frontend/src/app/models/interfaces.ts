@@ -71,9 +71,15 @@ export interface PiiMaskResult {
 /** ドキュメント情報 */
 export interface DocumentInfo {
   name: string;
-  chunks: number;
-  size?: string;
+  size: string;
+  chunks?: number;
+}
+
+/** ドキュメントプレビュー */
+export interface DocumentPreview {
+  name: string;
+  content: string;
 }
 
 /** 右パネルのタブ種別 */
-export type PanelTab = 'search' | 'logs' | 'eval';
+export type PanelTab = 'search' | 'logs' | 'eval' | 'documents';
