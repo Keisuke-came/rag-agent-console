@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, map, tap, catchError } from 'rxjs';
-import { RagResponse, EvalResult, EvalSummary, DocumentInfo, DocumentPreview } from '../models/interfaces';
+import { RagResponse, EvalResult, EvalSummary, DocumentInfo, DocumentPreview, AppSettings } from '../models/interfaces';
 import { AuditLogService } from './audit-log.service';
 
 const API_BASE = 'http://localhost:8000';
@@ -85,6 +85,20 @@ export class RagApiService {
     return this.http.get<{ documents: DocumentInfo[] }>(`${API_BASE}/api/documents`).pipe(
       map((res) => res.documents),
       catchError(() => of([])),
+    );
+  }
+
+  /** 設定取得 */
+  getSettings(): Observable<AppSettings> {
+    return this.http.get<AppSettings>(`${API_BASE}/api/settings`).pipe(
+      catchError(() => of({
+        chat_model: '(取得失敗)',
+        embed_model: '(取得失敗)',
+        top_k: 0,
+        chunk_size: 0,
+        chunk_overlap: 0,
+        guardrails_enabled: false,
+      })),
     );
   }
 
