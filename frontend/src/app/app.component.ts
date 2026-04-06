@@ -7,6 +7,7 @@ import { SearchPanelComponent } from './components/search-panel/search-panel.com
 import { AuditLogComponent } from './components/audit-log/audit-log.component';
 import { EvalPanelComponent } from './components/eval-panel/eval-panel.component';
 import { DocumentsComponent } from './components/documents/documents.component';
+import { SettingsComponent } from './components/settings/settings.component';
 import { AuditLogService } from './services/audit-log.service';
 import { SearchHit, PanelTab } from './models/interfaces';
 
@@ -22,6 +23,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
     AuditLogComponent,
     EvalPanelComponent,
     DocumentsComponent,
+    SettingsComponent,
   ],
   template: `
     <div class="app-shell">
@@ -73,6 +75,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
           <app-audit-log *ngIf="activeTab === 'logs'"></app-audit-log>
           <app-eval-panel *ngIf="activeTab === 'eval'"></app-eval-panel>
           <app-documents *ngIf="activeTab === 'documents'"></app-documents>
+          <app-settings *ngIf="activeTab === 'settings'"></app-settings>
         </div>
       </aside>
     </div>
@@ -164,6 +167,7 @@ export class AppComponent implements OnInit {
     { id: 'logs', icon: '📋', label: 'Logs' },
     { id: 'eval', icon: '📊', label: 'Eval' },
     { id: 'documents', icon: '📄', label: 'Docs' },
+    { id: 'settings', icon: '⚙️', label: 'Settings' },
   ];
 
   constructor(private auditLog: AuditLogService) {}

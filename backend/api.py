@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from rag.chain import ask
-from rag.config import LOGS_DIR, DOCS_DIR
+from rag.config import LOGS_DIR, DOCS_DIR, CHAT_MODEL, EMBED_MODEL, TOP_K, CHUNK_SIZE, CHUNK_OVERLAP, GUARDRAILS_ENABLED
 
 app = FastAPI(title="RAG Agent API")
 
@@ -115,6 +115,19 @@ def api_document_preview(name: str = Query(...)):
     with open(fpath, "r", encoding="utf-8", errors="replace") as f:
         content = f.read(3000)
     return {"name": safe_name, "content": content}
+
+
+@app.get("/api/settings")
+def api_settings():
+    """主要設定を返す。秘匿情報（APIキー等）は含まない。"""
+    return {
+        "chat_model": CHAT_MODEL,
+        "embed_model": EMBED_MODEL,
+        "top_k": TOP_K,
+        "chunk_size": CHUNK_SIZE,
+        "chunk_overlap": CHUNK_OVERLAP,
+        "guardrails_enabled": GUARDRAILS_ENABLED,
+    }
 
 
 @app.get("/api/health")

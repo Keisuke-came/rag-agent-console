@@ -81,5 +81,15 @@ export interface DocumentPreview {
   content: string;
 }
 
+/** アプリ設定 */
+export interface AppSettings {
+  chat_model: string;
+  embed_model: string;
+  top_k: number;
+  chunk_size: number;
+  chunk_overlap: number;
+  guardrails_enabled: boolean;
+}
+
 /** 右パネルのタブ種別 */
-export type PanelTab = 'search' | 'logs' | 'eval' | 'documents';
+export type PanelTab = 'search' | 'logs' | 'eval' | 'documents' | 'settings';
