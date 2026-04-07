@@ -9,7 +9,7 @@ import { EvalPanelComponent } from './components/eval-panel/eval-panel.component
 import { DocumentsComponent } from './components/documents/documents.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AuditLogService } from './services/audit-log.service';
-import { SearchHit, PanelTab } from './models/interfaces';
+import { SearchHit, PanelTab, TopTab } from './models/interfaces';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
     SettingsComponent,
   ],
   template: `
-    <div class="app-shell">
+    <div class="app-shell" [style.grid-template-columns]="mainView === 'chat' ? '280px 1fr 340px' : '1fr'">
       <!-- Top Bar -->
       <header class="top-bar">
         <div class="top-bar-logo">
@@ -34,9 +34,9 @@ import { SearchHit, PanelTab } from './models/interfaces';
           <span>RAG Agent Console</span>
         </div>
         <nav class="top-bar-nav">
-          <button class="active">Chat</button>
-          <button>Documents</button>
-          <button>Settings</button>
+          <button [class.active]="mainView === 'chat'" (click)="mainView = 'chat'">Chat</button>
+          <button [class.active]="mainView === 'documents'" (click)="mainView = 'documents'">Documents</button>
+          <button [class.active]="mainView === 'settings'" (click)="mainView = 'settings'">Settings</button>
         </nav>
         <div class="top-bar-status">
           <div class="status-badge">
@@ -49,16 +49,18 @@ import { SearchHit, PanelTab } from './models/interfaces';
         </div>
       </header>
 
-      <!-- Sidebar -->
-      <app-sidebar></app-sidebar>
+      <!-- Sidebar (Chat only) -->
+      <app-sidebar *ngIf="mainView === 'chat'"></app-sidebar>
 
-      <!-- Main Chat -->
+      <!-- Main Content -->
       <main class="main-content">
-        <app-chat (hitsChanged)="onHitsChanged($event)"></app-chat>
+        <app-chat *ngIf="mainView === 'chat'" (hitsChanged)="onHitsChanged($event)"></app-chat>
+        <app-documents *ngIf="mainView === 'documents'"></app-documents>
+        <app-settings *ngIf="mainView === 'settings'"></app-settings>
       </main>
 
-      <!-- Right Panel -->
-      <aside class="right-panel">
+      <!-- Right Panel (Chat only) -->
+      <aside class="right-panel" *ngIf="mainView === 'chat'">
         <div class="panel-tabs">
           <button class="panel-tab"
             *ngFor="let tab of panelTabs"
@@ -74,8 +76,6 @@ import { SearchHit, PanelTab } from './models/interfaces';
           </app-search-panel>
           <app-audit-log *ngIf="activeTab === 'logs'"></app-audit-log>
           <app-eval-panel *ngIf="activeTab === 'eval'"></app-eval-panel>
-          <app-documents *ngIf="activeTab === 'documents'"></app-documents>
-          <app-settings *ngIf="activeTab === 'settings'"></app-settings>
         </div>
       </aside>
     </div>
@@ -134,6 +134,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
       overflow: hidden;
     }
     app-chat { flex: 1; min-height: 0; }
+    app-documents, app-settings { flex: 1; min-height: 0; overflow-y: auto; padding: 16px; }
 
     .right-panel {
       background: var(--bg-secondary); border-left: 1px solid var(--border-subtle);
@@ -159,6 +160,7 @@ import { SearchHit, PanelTab } from './models/interfaces';
   `],
 })
 export class AppComponent implements OnInit {
+  mainView: TopTab = 'chat';
   activeTab: PanelTab = 'search';
   currentHits: SearchHit[] = [];
 
@@ -166,8 +168,6 @@ export class AppComponent implements OnInit {
     { id: 'search', icon: '🔍', label: 'Search' },
     { id: 'logs', icon: '📋', label: 'Logs' },
     { id: 'eval', icon: '📊', label: 'Eval' },
-    { id: 'documents', icon: '📄', label: 'Docs' },
-    { id: 'settings', icon: '⚙️', label: 'Settings' },
   ];
 
   constructor(private auditLog: AuditLogService) {}
