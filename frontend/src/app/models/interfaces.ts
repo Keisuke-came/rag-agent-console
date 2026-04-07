@@ -91,5 +91,8 @@ export interface AppSettings {
   guardrails_enabled: boolean;
 }
 
-/** 右パネルのタブ種別 */
-export type PanelTab = 'search' | 'logs' | 'eval' | 'documents' | 'settings';
+/** 上部タブ（主要画面切替） */
+export type TopTab = 'chat' | 'documents' | 'settings';
+
+/** 右パネルのタブ種別（Chat 補助） */
+export type PanelTab = 'search' | 'logs' | 'eval';
