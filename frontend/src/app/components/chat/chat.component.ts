@@ -31,7 +31,7 @@ import { AuditLogService } from '../../services/audit-log.service';
         </div>
 
         <!-- Message list -->
-        <div *ngFor="let msg of messages" class="message" [ngClass]="msg.role">
+        <div *ngFor="let msg of messages; let i = index" class="message" [ngClass]="msg.role">
           <div class="message-avatar">
             {{ msg.role === 'user' ? '👤' : '🤖' }}
           </div>
@@ -39,6 +39,12 @@ import { AuditLogService } from '../../services/audit-log.service';
             <div class="message-meta">
               <span class="message-name">{{ msg.role === 'user' ? 'You' : 'RAG Agent' }}</span>
               <span class="message-time">{{ msg.timestamp | date:'HH:mm' }}</span>
+              <button class="copy-btn"
+                *ngIf="msg.role === 'assistant'"
+                (click)="copyMessage(msg.content, i)"
+                [title]="copiedIndex === i ? 'コピー済み' : '回答をコピー'">
+                {{ copiedIndex === i ? '✓ コピー済み' : 'コピー' }}
+              </button>
             </div>
             <div class="message-content" [innerHTML]="formatContent(msg.content)"></div>
             <!-- Guardrail badges -->
@@ -197,6 +203,13 @@ import { AuditLogService } from '../../services/audit-log.service';
     .send-btn:hover { background: var(--accent-bright); box-shadow: 0 2px 12px rgba(99,143,255,0.4); }
     .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     .input-hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; padding-left: 4px; }
+
+    .copy-btn {
+      margin-left: auto; font: 400 11px var(--font-sans);
+      color: var(--text-muted); background: none; border: 1px solid var(--border-subtle);
+      padding: 2px 8px; border-radius: 100px; cursor: pointer; transition: var(--transition);
+    }
+    .copy-btn:hover { color: var(--accent-bright); border-color: var(--accent); }
   `],
 })
 export class ChatComponent {
@@ -208,6 +221,7 @@ export class ChatComponent {
   inputText = '';
   isLoading = false;
   inputFocused = false;
+  copiedIndex: number | null = null;
 
   quickQuestions = [
     'プロジェクトの目的は？',
@@ -280,6 +294,13 @@ export class ChatComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  copyMessage(content: string, index: number): void {
+    navigator.clipboard.writeText(content).then(() => {
+      this.copiedIndex = index;
+      setTimeout(() => { this.copiedIndex = null; }, 2000);
+    }).catch(() => {});
   }
 
   formatContent(content: string): string {
